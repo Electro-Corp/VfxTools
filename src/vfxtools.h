@@ -5,6 +5,7 @@
 
 #include <tool.h>
 #include <tools/opticalflow.h>
+#include <tools/shittyvhs.h>
 
 class VfxTools{
     /*
@@ -12,10 +13,13 @@ class VfxTools{
     */
 private:
     OpticalFlow opticFlowTool;
+    VHSEffect vhsTool;
 public:
     VfxTools();
 
     void OpticalFlow(Frame* f1, Frame* f2);
+
+    void VHS(Frame* f1, Frame* f2);
 
     ~VfxTools();
 };

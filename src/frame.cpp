@@ -53,7 +53,7 @@ int Frame::getHeight(){
 }
 
 void Frame::Write(){
-    std::cout << "Writing image to " << this->path << "\n";
+    //std::cout << "Writing image to " << this->path << "\n";
     for (png::uint_32 y = 0; y < image.get_height(); ++y){
         for (png::uint_32 x = 0; x < image.get_width(); ++x){
             image[y][x] = png::rgb_pixel(this->pixels[y][x].r, this->pixels[y][x].g, this->pixels[y][x].b);
@@ -64,6 +64,10 @@ void Frame::Write(){
 
 PixelRow* Frame::operator[](int i){
     return &(pixels[i]);
+}
+
+std::string Frame::getPath(){
+    return path;
 }
 
 void PixelRow::addPixel(Pixel p){

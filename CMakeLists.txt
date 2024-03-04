@@ -20,9 +20,13 @@ add_executable(vfxTools
     src/vfxtools.cpp
     src/frame.cpp
 
+    # Math
+    src/math/conv.cpp
+
     # Tools
     src/tool.cpp
     src/tools/opticalflow.cpp
+    src/tools/shittyvhs.cpp
 )
 
 

@@ -9,7 +9,7 @@
 #include <include/png/png.hpp>
 
 typedef struct{
-    float r,g,b;
+    double r,g,b;
 } Pixel;
 
 class PixelRow{
@@ -54,6 +54,8 @@ public:
     int getWidth();
 
     int getHeight();
+
+    std::string getPath();
 
     PixelRow* operator[](int i);
 

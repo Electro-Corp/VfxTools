@@ -4,8 +4,10 @@
 #ifndef OPTICALFLOW_H
 #define OPTICALFLOW_H
 #include <iostream>
+#include <sstream>
 
 #include <tool.h>
+#include <math/conv.h>
 class OpticalFlow : public Tool{
 private:
     void OpticFlowMain(Frame* f1, Frame* f2);
