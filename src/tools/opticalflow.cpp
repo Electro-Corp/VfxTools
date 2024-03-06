@@ -75,7 +75,26 @@ void OpticalFlow::OpticFlowMain(Frame* f1, Frame* f2){
         grayf2.setRow(row2, y);
     }
 
-    Frame awesome = Math::conv(*f1, edge);
+    Frame dervY = Math::conv(grayf1, sobelY);
+    Frame dervX = Math::conv(grayf1, sobelX);
+
+    Frame derv("CONVSFULL/" + std::to_string(num), dervY.getWidth(), dervX.getHeight());
+
+    for(int y = 0; y < derv.getHeight(); y++){
+        PixelRow rowDY = *(dervY.getRow(y));
+        PixelRow rowDX = *(dervX.getRow(y));
+        for(int x = 1; x < derv.getWidth() - 1; x++){
+            Pixel tmp;
+            tmp.r = ((rowDY[x].r) + (rowDX[x].r)) / 2;
+            tmp.g = ((rowDY[x].g) + (rowDX[x].g)) / 2;
+            tmp.b = ((rowDY[x].b) + (rowDX[x].b)) / 2;
+            rowDY.setPixel(tmp, x);
+        }
+        derv.setRow(rowDY, y);
+    }
+
+
+    derv.Write();
 
     //grayf1.Write();
     //grayf2.Write();
@@ -102,11 +121,12 @@ void OpticalFlow::OpticFlowMain(Frame* f1, Frame* f2){
     for(int y = 0; y < f1->getHeight(); y++){
         PixelRow row1 = *(f1->getRow(y));
         PixelRow row2 = *(f2->getRow(y));
-        PixelRow row3 = *(awesome.getRow(y));
+        PixelRow rowDY = *(dervY.getRow(y));
+        PixelRow rowDX = *(dervX.getRow(y));
         PixelRow replace = *(greenScreenReplace.getRow(y));
         for(int x = 1; x < f1->getWidth() - 1; x++){
             Pixel tmp;
-            float thing = row3[x].r;
+            float thing = ((((rowDY[x].r) / 255.0f)) + ((rowDY[x].g) / 255.0f) + ((rowDY[x].b) / 255.0f)) / 3;
             tmp.r = ((row2[x].r * thing) + (row1[x].r)) / 2;
             tmp.g = ((row2[x].g * thing) + (row1[x].g)) / 2;
             tmp.b = ((row2[x].b * thing) + (row1[x].b)) / 2;

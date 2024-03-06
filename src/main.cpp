@@ -37,8 +37,9 @@ int main(int args, char** argv){
     system("rm INTER/*");
     system("rm COMBINED/*");
     system("rm CONVS/*");
+    printf("\n");
     for(int i = 1; i < frames.size(); i++){
-        printf("Percent Complete: %d\n", (int)((i/ (float)frames.size()) * 100.0f));
+        printf("Percent Complete: %d | Frame %s\n", (int)((i/ (float)frames.size()) * 100.0f), frames[i]->getPath().c_str());
         vfxtools.OpticalFlow(frames[i - 1], frames[i]);
     }
     system("cp T1/* COMBINED");

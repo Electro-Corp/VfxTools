@@ -7,32 +7,7 @@ int convS = 0;
 
 Frame Math::conv(Frame input, double kernel[3][3]){
     Frame out(std::string{"CONVS/conv" + std::to_string(convS) + ".png"}, input.getWidth(), input.getHeight());
-    /*for(int y = 0; y < input.getHeight(); y++){
-        PixelRow row1 = *(input.getRow(y));
-        PixelRow outRow = *(out.getRow(y));
 
-        
-        for(int x = 0; x < input.getWidth(); x++){
-            Pixel tmp;
-            // Calculate convolution at pixel
-            double accR = 0, accB = 0, accG = 0;
-            for(int kY = 0; kY < 3; kY++){
-                for(int kX = 0; kX < 3; kX++){
-                    accB += kernel[kY][kX] * row1[x].b;
-                    accR += kernel[kY][kX] * row1[x].r;
-                    accG += kernel[kY][kX] * row1[x].g;
-                }
-            }
-
-            //getchar();
-            //std::cout << "in the end it was " << acc << "\n";
-            tmp.r = accR;
-            tmp.g = accB;
-            tmp.b = accG;
-            outRow.setPixel(tmp, x);
-        }
-        out.setRow(outRow, y);
-    }*/
     int pX = 0, pY = 0;
     for(int y = 1; y < input.getHeight() - 1; y++){
         PixelRow row = *(out.getRow(pY++));
