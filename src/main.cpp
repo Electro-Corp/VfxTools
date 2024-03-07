@@ -26,7 +26,7 @@ int main(int args, char** argv){
 
     std::set<fs::path> sorted_by_name;
 
-    for (auto &entry : fs::directory_iterator("T1"))
+    for (auto &entry : fs::directory_iterator("T3"))
         sorted_by_name.insert(entry.path());
 
     for (const auto & entry : sorted_by_name){
@@ -37,10 +37,12 @@ int main(int args, char** argv){
     system("rm INTER/*");
     system("rm COMBINED/*");
     system("rm CONVS/*");
+    system("rm CONVSFULL/*");
     printf("\n");
     for(int i = 1; i < frames.size(); i++){
         printf("Percent Complete: %d | Frame %s\n", (int)((i/ (float)frames.size()) * 100.0f), frames[i]->getPath().c_str());
         vfxtools.OpticalFlow(frames[i - 1], frames[i]);
+        delete(frames[i-1]);
     }
     system("cp T1/* COMBINED");
     system("cp OUT/* COMBINED");

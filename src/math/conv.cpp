@@ -37,7 +37,7 @@ Frame Math::conv(Frame input, double kernel[3][3]){
         out.setRow(row, pY);
     }
     Pixel tmp = (*input[1])[1];
-    out.Write();
+    //out.Write();
     convS++;
     return out;
 }

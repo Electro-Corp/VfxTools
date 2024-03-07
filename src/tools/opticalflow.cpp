@@ -2,6 +2,7 @@
 */
 #include <tools/opticalflow.h>
 #include <kernels.h>
+#include <complex>
 
 
 void OpticalFlow::initTool(...){
@@ -41,7 +42,7 @@ Frame greenScreenReplace("point.png");
 */
 void OpticalFlow::OpticFlowMain(Frame* f1, Frame* f2){
     
-    int num = std::stoi(f2->getPath().erase(f2->getPath().find("T1/"), 3)) - 1;
+    int num = std::stoi(f2->getPath().erase(f2->getPath().find("T3/"), 3)) - 1;
     Frame out("OUT/" + std::to_string(num), f1->getWidth(), f1->getHeight());   
 
 
@@ -77,6 +78,8 @@ void OpticalFlow::OpticFlowMain(Frame* f1, Frame* f2){
 
     Frame dervY = Math::conv(grayf1, sobelY);
     Frame dervX = Math::conv(grayf1, sobelX);
+    dervY.Write();
+    dervX.Write();
 
     Frame derv("CONVSFULL/" + std::to_string(num), dervY.getWidth(), dervX.getHeight());
 
@@ -85,9 +88,9 @@ void OpticalFlow::OpticFlowMain(Frame* f1, Frame* f2){
         PixelRow rowDX = *(dervX.getRow(y));
         for(int x = 1; x < derv.getWidth() - 1; x++){
             Pixel tmp;
-            tmp.r = ((rowDY[x].r) + (rowDX[x].r)) / 2;
-            tmp.g = ((rowDY[x].g) + (rowDX[x].g)) / 2;
-            tmp.b = ((rowDY[x].b) + (rowDX[x].b)) / 2;
+            tmp.r = sqrt((rowDY[x].r * rowDY[x].r) + (rowDX[x].r * rowDX[x].r));
+            tmp.g = sqrt((rowDY[x].g * rowDY[x].g) + (rowDX[x].g * rowDX[x].g));
+            tmp.b = sqrt((rowDY[x].b * rowDY[x].b) + (rowDX[x].b * rowDX[x].b));
             rowDY.setPixel(tmp, x);
         }
         derv.setRow(rowDY, y);
@@ -118,7 +121,7 @@ void OpticalFlow::OpticFlowMain(Frame* f1, Frame* f2){
     
     intermediate.Write();
 
-    for(int y = 0; y < f1->getHeight(); y++){
+    /*for(int y = 0; y < f1->getHeight(); y++){
         PixelRow row1 = *(f1->getRow(y));
         PixelRow row2 = *(f2->getRow(y));
         PixelRow rowDY = *(dervY.getRow(y));
@@ -127,9 +130,40 @@ void OpticalFlow::OpticFlowMain(Frame* f1, Frame* f2){
         for(int x = 1; x < f1->getWidth() - 1; x++){
             Pixel tmp;
             float thing = ((((rowDY[x].r) / 255.0f)) + ((rowDY[x].g) / 255.0f) + ((rowDY[x].b) / 255.0f)) / 3;
-            tmp.r = ((row2[x].r * thing) + (row1[x].r)) / 2;
-            tmp.g = ((row2[x].g * thing) + (row1[x].g)) / 2;
-            tmp.b = ((row2[x].b * thing) + (row1[x].b)) / 2;
+            tmp.r = ((row2[x].r / thing) + (row1[x].r)) / 2;
+            tmp.g = ((row2[x].g / thing) + (row1[x].g)) / 2;
+            tmp.b = ((row2[x].b / thing) + (row1[x].b)) / 2;
+            row1.setPixel(tmp, x);
+        }
+        out.setRow(row1, y);
+    }*/
+    for(int y = 0; y < f1->getHeight(); y++){
+        PixelRow row1 = *(f1->getRow(y));
+        PixelRow row2 = *(f2->getRow(y));
+        PixelRow rowDY = *(dervY.getRow(y));
+        PixelRow rowDX = *(dervX.getRow(y));
+        for(int x = 0; x < f1->getWidth(); x++){
+            Pixel tmp;
+            float iX = rowDX[x].r;
+            float iY = rowDY[x].r;
+            float iXY = iX * iY;
+            float iT = 0.4;
+            float deter = 1 / ((iX * iY) - (iXY * iXY));
+
+            float inv1 = deter * iX;
+            float inv2 = deter * iXY;
+            float inv4 = deter * iY;
+
+            float vX = (inv1 * (-1 * iX * iT)) + (inv2 * (-1 * iY * iT)); 
+            float vY = (inv4 * (-1 * iX * iT)) + (inv2 * (-1 * iY * iT)); 
+
+            float mag = sqrt((vX * vX) + (vY * vY));
+
+            tmp.r = mag;
+            tmp.g = mag;
+            tmp.b = mag;
+            
+
             row1.setPixel(tmp, x);
         }
         out.setRow(row1, y);
