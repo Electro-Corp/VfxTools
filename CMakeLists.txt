@@ -31,5 +31,5 @@ add_executable(vfxTools
 
 
 # Flags
-target_compile_options(vfxTools PUBLIC -fpermissive -g -O2 -I/usr/include/libpng16)
+target_compile_options(vfxTools PUBLIC -fpermissive -g -O3 -I/usr/include/libpng16)
 target_link_libraries(vfxTools PUBLIC ${PNG_LIBRARY})
